@@ -129,20 +129,29 @@ class NeuralNetworkModel(nn.Module):
         UserWarning
             If activation string is not recognized.
         """
-        if activation == "relu":
-            return nn.ReLU()
-        elif activation == "elu":
-            return nn.ELU()
-        elif activation == "tanh":
-            return nn.Tanh()
-        elif activation == "hard-tanh":
-            return nn.Hardtanh()
-        elif activation == "sigmoid":
-            return nn.Sigmoid()
+
+        activation_map = {
+            "relu":nn.ReLU(),
+            "elu":nn.ELU(),
+            "tanh":nn.Tanh(),
+            "hardtanh":nn.Hardtanh(),
+            "sigmoid":nn.Sigmoid(),
+            "softplus":nn.Softplus(),
+            "leakyrelu":nn.LeakyReLU(),
+            "selu":nn.SELU(),
+        }
+
+        # Normalize string
+        activation = activation.lower().strip()
+        
+        # Set activation function
+        if activation in activation_map:
+            return activation_map[activation]
         else:
-            warnings.warn("Activation not recognized, applying ReLU")
+            warnings.warn("Chosen activation function is not in torch.nn. Defaulting to ReLU")
             return nn.ReLU()
 
+  
     def structure_consistency_check(self, model_structure: dict):
         """
         Check if the model structure follows the expected standards:
